@@ -1,7 +1,5 @@
 package vents;
 
-import static java.util.stream.Collectors.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -23,7 +21,7 @@ public class LineTest {
                 new Point(0, 0),
                 new Point(0, 1),
                 new Point(0, 2));
-        assertEquals(expectedPoints, line.points().collect(toList()));
+        assertEquals(expectedPoints, line.points().toList());
     }
 
     @Test
@@ -33,7 +31,7 @@ public class LineTest {
                 new Point(0, 0),
                 new Point(0, 1),
                 new Point(0, 2));
-        assertEquals(expectedPoints, line.points().collect(toList()));
+        assertEquals(expectedPoints, line.points().toList());
     }
 
     @Test
@@ -43,7 +41,7 @@ public class LineTest {
                 new Point(0, 0),
                 new Point(1, 0),
                 new Point(2, 0));
-        assertEquals(expectedPoints, line.points().collect(toList()));
+        assertEquals(expectedPoints, line.points().toList());
     }
 
     @Test
@@ -53,6 +51,27 @@ public class LineTest {
                 new Point(0, 0),
                 new Point(1, 0),
                 new Point(2, 0));
-        assertEquals(expectedPoints, line.points().collect(toList()));
+        assertEquals(expectedPoints, line.points().toList());
     }
+
+    @Test
+    void linePointsDiagonal() {
+        var line = Line.of(0, 0, 2, 2);
+        var expectedPoints = List.of(
+                new Point(0, 0),
+                new Point(1, 1),
+                new Point(2, 2));
+        assertEquals(expectedPoints, line.points().toList());
+    }
+
+    @Test
+    void linePointsDiagonalUnordered() {
+        var line = Line.of(3, 3, 1, 5);
+        var expectedPoints = List.of(
+                new Point(1, 5),
+                new Point(2, 4),
+                new Point(3, 3));
+        assertEquals(expectedPoints, line.points().toList());
+    }
+
 }

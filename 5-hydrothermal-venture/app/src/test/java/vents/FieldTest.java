@@ -29,6 +29,6 @@ public class FieldTest {
 
     @Test
     void numHotspots() {
-        assertEquals(5L, field.numHotspots(2));
+        assertEquals(12L, field.numHotspots(2));
     }
 }

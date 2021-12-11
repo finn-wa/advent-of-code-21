@@ -1,6 +1,7 @@
 package vents;
 
-import java.util.stream.IntStream;
+import static java.util.stream.IntStream.*;
+
 import java.util.stream.Stream;
 
 public record Line(Point start, Point end) {
@@ -9,31 +10,33 @@ public record Line(Point start, Point end) {
         return new Line(new Point(startX, startY), new Point(endX, endY));
     }
 
-    public static Line ordered(Point p1, Point p2) {
-        Point min = new Point(Math.min(p1.row(), p2.row()), Math.min(p1.col(), p2.col()));
-        Point max = new Point(Math.max(p1.row(), p2.row()), Math.max(p1.col(), p2.col()));
-        return new Line(min, max);
-    }
-
-    public boolean isNotDiagonal() {
-        return start.row() == end.row() || start.col() == end.col();
+    public boolean isDiagonal() {
+        return !(start.row() == end.row() || start.col() == end.col());
     }
 
     public Stream<Point> points() {
-        Line orderedLine = ordered(start, end);
-        if (!this.equals(orderedLine)) {
-            return orderedLine.points();
+        return ordered().pointsImpl();
+    }
+
+    private Line ordered() {
+        var p1IsLeft = (start.row() == end.row() && start.col() < end.col()) || start.row() < end.row();
+        if (p1IsLeft) {
+            return this;
         }
-        if (start.row() == end.row()) {
-            var x = start.row();
-            return IntStream.rangeClosed(start.col(), end.col())
-                    .mapToObj(y -> new Point(x, y));
+        return new Line(end, start);
+    }
+
+    private Stream<Point> pointsImpl() {
+        int deltaRow = end.row() - start.row();
+        int deltaCol = end.col() - start.col();
+        var steps = Math.max(deltaRow, deltaCol);
+        if (steps == 0) {
+            return Stream.of(start);
         }
-        if (start.col() == end.col()) {
-            var y = start.col();
-            return IntStream.rangeClosed(start.row(), end.row())
-                    .mapToObj(x -> new Point(x, y));
-        }
-        throw new IllegalStateException("diagonal shit " + this);
+        return rangeClosed(0, steps)
+                .boxed()
+                .map(i -> new Point(
+                        i * (deltaRow / steps) + start.row(),
+                        i * (deltaCol / steps) + start.col()));
     }
 }

@@ -5,7 +5,6 @@ import static java.util.stream.IntStream.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.IntUnaryOperator;
 import java.util.stream.Stream;
 
 /**
@@ -30,11 +29,11 @@ public class Field {
                 .max(Integer::compare).orElseThrow()
                 + 1;
         this.tiles = new int[this.numCols][this.numRows];
-        lines.stream()
-                .filter(Line::isNotDiagonal)
-                .forEach(line -> {
-                    line.points().forEach(point -> this.tiles[point.col()][point.row()]++);
-                });
+        lines.stream().forEach(line -> {
+            line.points().forEach(point -> {
+                this.tiles[point.col()][point.row()]++;
+            });
+        });
     }
 
     public Stream<int[]> cols() {
